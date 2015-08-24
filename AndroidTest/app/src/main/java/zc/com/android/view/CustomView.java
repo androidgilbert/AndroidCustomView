@@ -21,9 +21,10 @@ import zc.com.androidtest.R;
  */
 public class CustomView extends View {
     private static final String TAG = "CustomView";
-
+    /**
+     * The Image
+     */
     private Bitmap imageBitmap;
-    
 
     private float imageAspectRatio;
 
@@ -165,8 +166,8 @@ public class CustomView extends View {
                     break;
             }
         }
+        //Remember.Rececle the TypedArray
         a.recycle();
-
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textPaint = new TextPaint(paint);
         rect = new Rect();
@@ -189,7 +190,7 @@ public class CustomView extends View {
 
         int width;
         int height;
-
+        //First,should confirm that the mode is EXACTLY or not.
         if (widthMode == MeasureSpec.EXACTLY) {
             width = widthSize;
         } else {
