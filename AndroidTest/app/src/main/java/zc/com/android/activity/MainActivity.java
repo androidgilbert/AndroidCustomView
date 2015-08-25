@@ -1,6 +1,6 @@
 package zc.com.android.activity;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,7 +13,7 @@ import zc.com.androidtest.R;
 /**
  * The Main Activity
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
     private RtButton mRtButton;
 
     @Override
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return false;
-        //return super.dispatchTouchEvent(event);
+        return super.dispatchTouchEvent(event);
     }
 
     @Override
