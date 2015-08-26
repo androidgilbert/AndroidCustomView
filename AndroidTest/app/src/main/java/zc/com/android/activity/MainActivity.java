@@ -1,11 +1,14 @@
 package zc.com.android.activity;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.webkit.WebView;
 
 import zc.com.android.view.RtButton;
 import zc.com.androidtest.R;
@@ -45,7 +48,8 @@ public class MainActivity extends Activity {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 System.out.println("Activity~~dispatch~~down");
-                break;
+                return true;
+            //break;
             case MotionEvent.ACTION_MOVE:
                 System.out.println("Activity~~dispatch~~move");
                 break;
@@ -53,7 +57,7 @@ public class MainActivity extends Activity {
                 System.out.println("Activity~~dispatch~~up");
                 break;
         }
-        return false;
+        //return true;
         return super.dispatchTouchEvent(event);
     }
 
@@ -93,5 +97,35 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Test the performance of the Code
+     */
+    private Bitmap getFavicon(final WebView webview) {
+        Bitmap mFavBitmap = null;
+        if (null != webview && (mFavBitmap = webview.getFavicon()) != null) {
+            return mFavBitmap;
+        } else {
+            return BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        }
+    }
+
+    /**
+     * Different kinds of implement
+     *
+     * @param webview
+     * @return
+     */
+    private Bitmap getFaviconOne(final WebView webview) {
+        if (null == webview) {
+            return BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        } else {
+            if (null == webview.getFavicon()) {
+                return BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+            } else {
+                return webview.getFavicon();
+            }
+        }
     }
 }
