@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
+
 
 import zc.com.android.view.RtButton;
 import zc.com.androidtest.R;
@@ -18,12 +21,16 @@ import zc.com.androidtest.R;
  */
 public class MainActivity extends Activity {
     private RtButton mRtButton;
+    private MTestHandler mTestHandler;
+    private MTestThread mTestThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mRtButton = (RtButton) findViewById(R.id.bt_rt);
+        mTestHandler = new MTestHandler();
+        new MTestThread().start();
         mRtButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -113,6 +120,7 @@ public class MainActivity extends Activity {
 
     /**
      * Different kinds of implement
+     * Low Performance
      *
      * @param webview
      * @return
@@ -125,6 +133,39 @@ public class MainActivity extends Activity {
                 return BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
             } else {
                 return webview.getFavicon();
+            }
+        }
+    }
+
+    /**
+     * The Handler Oject on The Main Thread
+     */
+    class MTestHandler extends Handler {
+        public MTestHandler() {
+
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            String text = bundle.getString("test");
+            mRtButton.setText(text);
+        }
+    }
+
+    class MTestThread extends Thread {
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(3000);
+                Message msg = new Message();
+                Bundle bundle = new Bundle();
+                bundle.putString("test", "fighting");
+                msg.setData(bundle);
+                mTestHandler.sendMessage(msg);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
