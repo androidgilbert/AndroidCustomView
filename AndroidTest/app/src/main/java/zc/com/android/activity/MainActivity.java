@@ -1,6 +1,7 @@
 package zc.com.android.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -11,8 +12,11 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.Toast;
 
-
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
+import zc.com.android.Model.MessageEvent;
 import zc.com.android.view.RtButton;
 import zc.com.androidtest.R;
 
@@ -23,11 +27,13 @@ public class MainActivity extends Activity {
     private RtButton mRtButton;
     private MTestHandler mTestHandler;
     private MTestThread mTestThread;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mContext = this;
         mRtButton = (RtButton) findViewById(R.id.bt_rt);
         mTestHandler = new MTestHandler();
         new MTestThread().start();
@@ -70,6 +76,7 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        EventBus.getDefault().post(new MessageEvent("EventBus"));
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 System.out.println("Activity~~ontouchevent~~down");
@@ -137,6 +144,22 @@ public class MainActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+    @Subscribe
+    public void onEvent(MessageEvent event) {
+        Toast.makeText(mContext, event.message, Toast.LENGTH_SHORT).show();
+    }
+
     /**
      * The Handler Oject on The Main Thread
      */
@@ -159,6 +182,7 @@ public class MainActivity extends Activity {
         public void run() {
             try {
                 Thread.sleep(3000);
+
                 Message msg = new Message();
                 Bundle bundle = new Bundle();
                 bundle.putString("test", "fighting");
